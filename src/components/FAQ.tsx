@@ -1,114 +1,149 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const faqs = [
   {
     q: "What is Cyber Threat Intelligence?",
-    a: "Cyber Threat Intelligence (CTI) is the process of collecting, analyzing, and acting on information about current and potential cyber threats. It helps organizations understand who might attack them, how, and what they can do to prevent it.",
+    a: "Cyber Threat Intelligence (CTI) is the process of collecting, analyzing, and acting on information about current and potential cyber threats. It helps organizations understand who might attack them, how, and what they can do to prevent it — turning raw data into strategic defense.",
   },
   {
     q: "How does Beyond Cloud protect my business?",
-    a: "We provide 24/7 monitoring across surface, deep, and dark web sources. Our platform correlates threat data, filters noise using AI, and delivers actionable alerts with remediation guidance — so your team can respond fast.",
+    a: "We provide 24/7 monitoring across surface, deep, and dark web sources. Our platform correlates threat data from hundreds of feeds, filters noise using AI, and delivers actionable alerts with step-by-step remediation guidance — so your team can respond fast and decisively.",
   },
   {
-    q: "Do I need a dedicated security team to use the platform?",
-    a: "No. Beyond Cloud is designed to augment your existing team, whether you have a full SOC or just one IT person. Our AI handles the heavy lifting, and our experts provide support when you need it.",
+    q: "Do I need a dedicated security team?",
+    a: "No. Beyond Cloud is designed to augment your existing team, whether you have a full SOC or just one IT person. Our AI handles the heavy lifting — threat correlation, prioritization, and automated response — while our experts provide hands-on support when you need it.",
   },
   {
     q: "How quickly can I get started?",
-    a: "Most organizations are up and running within 24–48 hours. Our onboarding process is streamlined — we connect to your existing infrastructure with minimal configuration required.",
+    a: "Most organizations are up and running within 24–48 hours. Our onboarding process is streamlined with pre-built integrations for major cloud providers, SIEMs, and endpoint solutions. Minimal configuration required.",
   },
   {
     q: "What industries do you serve?",
-    a: "We serve organizations across fintech, e-commerce, healthcare, SaaS, cryptocurrency, iGaming, travel, and more. Any business with digital assets and customer data can benefit from our platform.",
+    a: "We serve organizations across fintech, e-commerce, healthcare, SaaS, cryptocurrency, iGaming, travel, and more. Any business with digital assets and customer data can benefit from our threat intelligence platform.",
   },
   {
     q: "Is the platform compliant with industry standards?",
-    a: "Yes. Beyond Cloud maps intelligence to major regulatory frameworks including ISO 27001, SOC 2, GDPR, and PCI-DSS. We provide automated compliance reporting to keep you audit-ready at all times.",
+    a: "Yes. Beyond Cloud maps intelligence to major regulatory frameworks including ISO 27001, SOC 2, GDPR, and PCI-DSS. We provide automated compliance reporting and audit trails to keep you audit-ready at all times.",
   },
 ];
 
 export default function FAQ() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-[#f4f8ff] via-white to-[#f8fbff] py-24 font-sans md:py-32">
-      {/* ambient */}
-      <div className="pointer-events-none absolute left-1/2 top-[20%] h-[500px] w-[600px] -translate-x-1/2 rounded-full bg-[#1F4590]/[0.03] blur-[150px]" />
+    <section className="relative overflow-hidden bg-gradient-to-b from-[#0a1628] via-[#0f2240] to-[#0a1628] py-24 font-sans md:py-32 lg:py-36">
 
-      <div className="relative mx-auto max-w-[780px] px-5 md:px-8">
+      {/* ambient glows */}
+      <div className="pointer-events-none absolute left-1/3 top-[15%] h-[500px] w-[500px] rounded-full bg-[#1F4590]/10 blur-[150px]" />
+      <div className="pointer-events-none absolute bottom-[10%] right-1/4 h-[400px] w-[400px] rounded-full bg-[#3b82f6]/6 blur-[130px]" />
+
+      <div className="relative mx-auto max-w-[1140px] px-5 md:px-8">
 
         {/* heading */}
-        <div className="mb-14 text-center">
-          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#3b82f6]">
+        <div className="mb-14 text-center lg:mb-16">
+          <p className="mb-3 text-[12px] font-semibold uppercase tracking-[0.22em] text-[#3b82f6]">
             FAQ
           </p>
-          <h2 className="text-[1.6rem] font-extrabold leading-tight tracking-tight text-zinc-900 sm:text-[2rem] lg:text-[2.4rem]">
+          <h2 className="text-[2rem] font-black leading-tight tracking-tight text-white sm:text-[2.4rem] lg:text-[2.8rem]">
             Frequently Asked Questions
           </h2>
-          <p className="mx-auto mt-4 max-w-md text-[14px] leading-relaxed text-zinc-500">
-            Everything you need to know about Beyond Cloud and our platform.
-          </p>
         </div>
 
-        {/* accordion */}
-        <div className="flex flex-col gap-3">
-          {faqs.map((faq, i) => {
-            const isOpen = openIndex === i;
-            return (
-              <div
-                key={i}
-                className={`overflow-hidden rounded-2xl border transition-all duration-300 ${
-                  isOpen
-                    ? "border-[#1F4590]/15 bg-white shadow-[0_4px_24px_-4px_rgba(31,69,144,0.08)]"
-                    : "border-zinc-200/80 bg-white/60 hover:border-[#1F4590]/10 hover:bg-white"
-                }`}
-              >
+        {/* split layout */}
+        <div className="flex flex-col gap-8 lg:flex-row lg:gap-12">
+
+          {/* ── LEFT: question list ── */}
+          <div className="flex shrink-0 flex-col gap-1.5 lg:w-[400px]">
+            {faqs.map((faq, i) => {
+              const isActive = activeIndex === i;
+              return (
                 <button
+                  key={i}
                   type="button"
-                  onClick={() => setOpenIndex(isOpen ? null : i)}
-                  className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
+                  onClick={() => setActiveIndex(i)}
+                  className={`group relative flex items-center gap-3.5 rounded-xl px-5 py-4 text-left transition-all duration-300 ${
+                    isActive
+                      ? "bg-white/[0.06]"
+                      : "hover:bg-white/[0.03]"
+                  }`}
                 >
-                  <span className={`text-[15px] font-semibold transition-colors duration-300 ${isOpen ? "text-[#1F4590]" : "text-zinc-800"}`}>
-                    {faq.q}
-                  </span>
-                  <div
-                    className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition-all duration-300 ${
-                      isOpen
-                        ? "border-[#1F4590]/20 bg-[#1F4590]/[0.08] text-[#1F4590]"
-                        : "border-zinc-200 bg-zinc-50 text-zinc-400"
+                  {/* left accent bar */}
+                  <motion.div
+                    className="absolute left-0 top-[20%] h-[60%] w-[3px] rounded-full bg-[#3b82f6]"
+                    animate={{
+                      opacity: isActive ? 1 : 0,
+                      scaleY: isActive ? 1 : 0,
+                    }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                  />
+
+                  {/* number */}
+                  <span
+                    className={`shrink-0 font-mono text-[12px] font-bold transition-colors duration-300 ${
+                      isActive ? "text-[#3b82f6]" : "text-white/20"
                     }`}
                   >
-                    <svg
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      className={`h-3.5 w-3.5 transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}
-                    >
-                      <path d="M8 3v10M3 8h10" strokeLinecap="round" />
-                    </svg>
-                  </div>
+                    0{i + 1}
+                  </span>
+
+                  {/* question */}
+                  <span
+                    className={`text-[14px] font-semibold leading-snug transition-colors duration-300 lg:text-[15px] ${
+                      isActive ? "text-white" : "text-white/40 group-hover:text-white/55"
+                    }`}
+                  >
+                    {faq.q}
+                  </span>
                 </button>
+              );
+            })}
+          </div>
 
-                <div
-                  className="grid transition-all duration-300 ease-out"
-                  style={{
-                    gridTemplateRows: isOpen ? "1fr" : "0fr",
-                  }}
-                >
-                  <div className="overflow-hidden">
-                    <p className="px-6 pb-5 text-[13.5px] leading-[1.75] text-zinc-500">
-                      {faq.a}
+          {/* ── RIGHT: answer panel ── */}
+          <div className="relative min-h-[280px] flex-1 lg:min-h-[320px]">
+            {/* glass panel */}
+            <div className="relative h-full overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.03] backdrop-blur-sm">
+              {/* top edge glow */}
+              <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#3b82f6]/25 to-transparent" />
+
+              <div className="relative flex h-full flex-col justify-center p-8 sm:p-10 lg:p-12">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeIndex}
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -12 }}
+                    transition={{ duration: 0.35, ease: "easeOut" }}
+                  >
+                    {/* question as title */}
+                    <div className="mb-6 flex items-center gap-3">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#3b82f6]/20 bg-[#3b82f6]/[0.08]">
+                        <span className="font-mono text-[11px] font-bold text-[#60a5fa]">
+                          0{activeIndex + 1}
+                        </span>
+                      </div>
+                      <h3 className="text-[18px] font-bold text-white lg:text-[20px]">
+                        {faqs[activeIndex].q}
+                      </h3>
+                    </div>
+
+                    {/* answer */}
+                    <p className="text-[15px] leading-[1.85] text-white/50 lg:text-[16px]">
+                      {faqs[activeIndex].a}
                     </p>
-                  </div>
-                </div>
+                  </motion.div>
+                </AnimatePresence>
               </div>
-            );
-          })}
-        </div>
+            </div>
 
+            {/* depth shadow */}
+            <div className="pointer-events-none absolute -bottom-2 left-5 right-5 -z-10 h-8 rounded-2xl bg-[#1F4590]/8 blur-lg" />
+          </div>
+
+        </div>
       </div>
     </section>
   );
